@@ -1,6 +1,6 @@
 # 🤖 BrandGuard AI
 
-### AI-Powered Brand-Safe Marketing Content Generation using n8n, OpenAI & Google Sheets
+### AI-Powered Brand-Safe Marketing Content Generation using n8n, OpenAI & Google Sheets with Human-in-the loop validation.
 
 ![n8n](https://img.shields.io/badge/n8n-Workflow%20Automation-orange)
 ![OpenAI](https://img.shields.io/badge/OpenAI-GPT--4.1-green)
