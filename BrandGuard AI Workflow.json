@@ -1,0 +1,420 @@
+{
+  "name": "BrandGuard AI Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "faf2e92c-53d2-47f1-9113-d71de2b7fad7",
+      "name": "When clicking ‘Execute workflow’",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ",
+          "mode": "list",
+          "cachedResultName": "BrandGuard Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "PRODUCTS",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "id": "5a11a02b-2b78-437c-a479-f8d4ce115240",
+      "name": "Get row(s) in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        224,
+        112
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DcaC8JjGnnUr66MM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f3d15397-5dec-437d-8a03-cceefc690552",
+              "name": "Product Name",
+              "value": "SmartWatch X",
+              "type": "string"
+            },
+            {
+              "id": "c8f05fcd-f8b2-4735-8ef8-86345374c8f7",
+              "name": "Audience",
+              "value": "Students",
+              "type": "string"
+            },
+            {
+              "id": "f250889b-f98c-49c2-8c2c-892ff038bf0d",
+              "name": "Content Type",
+              "value": "Instagram",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "5780c029-2fb3-4c0b-8f06-da77f9f9967f",
+      "name": "Edit Fields",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        448,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ",
+          "mode": "list",
+          "cachedResultName": "BrandGuard Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1438630663,
+          "mode": "list",
+          "cachedResultName": "Brand guidelines",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ/edit#gid=1438630663"
+        },
+        "filtersUI": {
+          "values": []
+        },
+        "options": {}
+      },
+      "id": "4ffcb65a-9f32-49ff-87a5-0287f2fef4a3",
+      "name": "brand guideline",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        672,
+        112
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DcaC8JjGnnUr66MM",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Product:\n{{ $('Get row(s) in sheet').item.json['Product Name'] }}\n\nFeatures:\n{{ $('Get row(s) in sheet').item.json.Features }}\n\nApproved Claims:\n{{ $('Get row(s) in sheet').item.json['Approved claims'] }}\n\nTarget Audience:\n\n{{ $('Edit Fields').item.json.Audience }}\nContent Type:\n{{ $('Edit Fields').item.json['Content Type'] }}\n\nBrand Guidelines:\n{{ $json.Guideline }}\n\nGenerate the requested marketing content",
+        "options": {
+          "systemMessage": "You are BrandGuard AI, a professional marketing assistant.\n\nYour job is to create marketing content using ONLY the product information and brand guidelines provided.\n\nRules:\n- Never invent product specifications.\n- Never exaggerate product benefits.\n- Keep the content below 120 words.\n- Use a professional and friendly tone.\n- Include a clear call-to-action.\n- If information is missing, say \"Insufficient information\" instead of making assumptions."
+        }
+      },
+      "id": "53399721-a41a-4aef-af72-cd0a52670f2c",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        896,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-5-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-5-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "id": "4f4f2d60-7250-4548-917e-a6afc811c770",
+      "name": "OpenAI Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        976,
+        336
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "Le2XLcOGVxziRYks",
+          "name": "OpenAI account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "10249b05-deef-4340-a77e-357bde522267",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "4d6ecb24-5b33-4ee0-a3a1-800030a0ec2a",
+      "name": "If",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        112
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ",
+          "mode": "list",
+          "cachedResultName": "BrandGuard Database",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1662205575,
+          "mode": "list",
+          "cachedResultName": "Generated content",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1XmR4mi8CoNGct55Q3YCtpvdPu-wA4azPBeYOQC0S1FQ/edit#gid=1662205575"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $now }}",
+            "Product": "={{ $('Get row(s) in sheet').item.json['Product Name'] }}",
+            "Content type": "Instagram Post",
+            "AI Output": "={{ $('AI Agent').item.json.output }}",
+            "Validation": "Passed",
+            "Approval status": "Pending",
+            "output": "={{ $('AI Agent').item.json.output }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Date",
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product",
+              "displayName": "Product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Content type",
+              "displayName": "Content type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "AI Output",
+              "displayName": "AI Output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Validation",
+              "displayName": "Validation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Approval status",
+              "displayName": "Approval status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "output",
+              "displayName": "output",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1456,
+        112
+      ],
+      "id": "e2f4bb67-bc41-4b6d-9477-097e833ea726",
+      "name": "Append row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "DcaC8JjGnnUr66MM",
+          "name": "Google Sheets account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "brand guideline",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "brand guideline": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append row in sheet": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c7755ac4-5141-45a5-b831-97c292c2dc6a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "680a4ac95f6c39b512237e4cc5f80cc50c3f588f706f7b6f6b4f830f58170d58"
+  },
+  "nodeGroups": [],
+  "id": "KsqkONGg4MMVfd0Z",
+  "tags": []
+}
